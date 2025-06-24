@@ -1,0 +1,159 @@
+{% schema %}
+{
+  "name": "Custom Image Tab",
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "tab",
+          "label": "Tab",
+          "options": [
+            { "value": "tab1", "label": "Tab 1" },
+            { "value": "tab2", "label": "Tab 2" }
+          ],
+          "default": "tab1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image Tab",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.custom-image-tab-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+  gap: 12px;
+}
+.custom-image-tab-tab-btn {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  color: #2d1e0f;
+  padding: 10px 32px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.custom-image-tab-tab-btn.active {
+  background: #f5f3ef;
+  color: #000;
+  border-bottom: 2px solid #2d1e0f;
+}
+.custom-image-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  justify-items: center;
+  background: #fcfaf7;
+  padding: 40px 0;
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .custom-image-tab-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1023px) {
+  .custom-image-tab-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+  }
+}
+.custom-image-tab-item {
+  background: #fcfaf7;
+  text-align: center;
+  padding: 20px 10px 0 10px;
+  border-radius: 8px;
+}
+.custom-image-tab-item img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+.custom-image-tab-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #2d1e0f;
+}
+.custom-image-tab-subtitle {
+  font-size: 15px;
+  color: #a67c52;
+  margin-bottom: 2px;
+}
+.custom-image-tab-description {
+  font-size: 14px;
+  color: #7c6a58;
+}
+</style>
+
+<div class="custom-image-tab-tabs">
+  <button class="custom-image-tab-tab-btn active" data-tab="tab1" type="button">Tab 1</button>
+  <button class="custom-image-tab-tab-btn" data-tab="tab2" type="button">Tab 2</button>
+</div>
+
+<div class="custom-image-tab-grid">
+  {% for block in section.blocks %}
+    <div class="custom-image-tab-item" data-tab="{{ block.settings.tab }}" style="display: {% if block.settings.tab == 'tab1' %}block{% else %}none{% endif %};">
+      {% if block.settings.image != blank %}
+        <img src="{{ block.settings.image | img_url: '600x600' }}" alt="{{ block.settings.title }}">
+      {% endif %}
+      <div class="custom-image-tab-title">{{ block.settings.title }}</div>
+      <div class="custom-image-tab-subtitle">{{ block.settings.subtitle }}</div>
+      <div class="custom-image-tab-description">{{ block.settings.description }}</div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+(function() {
+  var tabBtns = document.querySelectorAll('.custom-image-tab-tab-btn');
+  var items = document.querySelectorAll('.custom-image-tab-item');
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      tabBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var tab = btn.getAttribute('data-tab');
+      items.forEach(function(item) {
+        if(item.getAttribute('data-tab') === tab) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
