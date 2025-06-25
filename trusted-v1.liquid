@@ -1,0 +1,361 @@
+{% comment %}
+Testimonial Slider Section (Swiper.js)
+Mimics the provided layout and design, with schema and blocks for Shopify customization.
+{% endcomment %}
+
+
+{% liquid
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign show_image = false
+  if section.settings.image_1 != blank or section.settings.image_2 != blank or section.settings.image_3 != blank
+    assign show_image = true
+  endif
+%}
+
+{%- style -%}
+  #m-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+
+{% schema %}
+{
+  "name": "Custom Trusted",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container",
+      "options": [
+        {
+          "value": "container-fluid",
+          "label": "Default"
+        },
+        {
+          "value": "container-full",
+          "label": "Full width"
+        },
+        {
+          "value": "container",
+          "label": "Use container box"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Image settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Custom Attributes"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom classes"
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Visible in the view animation",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Inherit global setting"
+        },
+        {
+          "value": "fade-in",
+          "label": "Fade in"
+        },
+        {
+          "value": "fade-in-up",
+          "label": "Fade in up"
+        },
+        {
+          "value": "fade-in-left",
+          "label": "Fade in left"
+        },
+        {
+          "value": "fade-in-right",
+          "label": "Fade in right"
+        }
+      ]
+    }, 
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "TRUSTED BY THE BEST."
+    },
+    {
+      "type": "text",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Nutrafol is the #1 dermatologist-recommended hair growth supplement brand.*"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_number",
+      "label": "Stat 1 Number",
+      "default": "20"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_desc",
+      "label": "Stat 1 Description",
+      "default": "CLINICAL STUDIES INCLUDING RANDOMIZED PLACEBO CONTROLLED TRIALS"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_number",
+      "label": "Stat 2 Number",
+      "default": "26"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_desc",
+      "label": "Stat 2 Description",
+      "default": "PUBLICATIONS TO FURTHER HAIR WELLNESS RESEARCH"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_number",
+      "label": "Stat 3 Number",
+      "default": "40+"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_desc",
+      "label": "Stat 3 Description",
+      "default": "WELLNESS, BEAUTY, AND INNOVATION AWARDS FROM TOP MEDIA OUTLETS"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_number",
+      "label": "Stat 4 Number",
+      "default": "1.5M+"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_desc",
+      "label": "Stat 4 Description",
+      "default": "PEOPLE GROWING WITH NUTRAFOL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Trusted By The Best Stats"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.trusted-stats-section {
+  position: relative;
+  background: #444;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+.trusted-stats-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.6;
+}
+.trusted-stats-content {
+  position: relative;
+  z-index: 2;
+  padding: 100px 20px 100px 20px;
+}
+.trusted-stats-headline {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  line-height: 1.1;
+}
+.trusted-stats-subheadline {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+.trusted-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(60,60,60,0.8);
+  margin: 0 auto;
+  border-radius: 10px;
+  max-width: 1200px;
+  z-index: 2;
+  position: relative;
+}
+.trusted-stats-item {
+  flex: 1 1 200px;
+  min-width: 200px;
+  padding: 40px 20px 30px 20px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.trusted-stats-item:last-child {
+  border-right: none;
+}
+.trusted-stats-number {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.trusted-stats-desc {
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+@media (max-width: 900px) {
+  .trusted-stats-headline { font-size: 2.2rem; }
+  .trusted-stats-grid { flex-direction: column; }
+  .trusted-stats-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .trusted-stats-item:last-child { border-bottom: none; }
+}
+@media (max-width: 600px) {
+  .trusted-stats-content { padding: 30px 5px 0 5px; }
+  .trusted-stats-headline { font-size: 1.3rem; }
+  .trusted-stats-number { font-size: 2rem; }
+}
+</style>
+
+
+<section
+  id="m-section-{{ section.id }}"
+  class="m-section m-rich-text{% if show_image %} m-rich-text--show-images{% endif %} m-gradient m-color-{{ section.settings.color_scheme }} {{ section.settings.custom_class }}"
+   data-aos="fade-up" 
+  data-aos-duration="3000"
+ data-aos-anchor-placement="top-bottom"
+>
+   <div class="{{ section.settings.container }} m-section-my m-section-py">
+
+     
+<div class="trusted-stats-section">
+  {% if section.settings.background_image != blank %}
+    <img class="trusted-stats-bg" src="{{ section.settings.background_image | img_url: '2000x' }}" alt="Trusted background" loading="lazy" />
+  {% endif %}
+  <div class="trusted-stats-content">
+    <div class="trusted-stats-headline">{{ section.settings.headline }}</div>
+    <div class="trusted-stats-subheadline">{{ section.settings.subheadline }}</div>
+    <div class="trusted-stats-grid">
+      <div class="trusted-stats-item">
+        <div class="trusted-stats-number">{{ section.settings.stat_1_number }}</div>
+        <div class="trusted-stats-desc">{{ section.settings.stat_1_desc }}</div>
+      </div>
+      <div class="trusted-stats-item">
+        <div class="trusted-stats-number">{{ section.settings.stat_2_number }}</div>
+        <div class="trusted-stats-desc">{{ section.settings.stat_2_desc }}</div>
+      </div>
+      <div class="trusted-stats-item">
+        <div class="trusted-stats-number">{{ section.settings.stat_3_number }}</div>
+        <div class="trusted-stats-desc">{{ section.settings.stat_3_desc }}</div>
+      </div>
+      <div class="trusted-stats-item">
+        <div class="trusted-stats-number">{{ section.settings.stat_4_number }}</div>
+        <div class="trusted-stats-desc">{{ section.settings.stat_4_desc }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+   </div>
+</section>
