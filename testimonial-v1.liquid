@@ -1,0 +1,455 @@
+{% comment %}
+Testimonial Slider Section (Swiper.js)
+Mimics the provided layout and design, with schema and blocks for Shopify customization.
+{% endcomment %}
+
+
+{% liquid
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign show_image = false
+  if section.settings.image_1 != blank or section.settings.image_2 != blank or section.settings.image_3 != blank
+    assign show_image = true
+  endif
+%}
+
+{%- style -%}
+  #m-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<section
+  id="m-section-{{ section.id }}"
+  class="m-section m-rich-text{% if show_image %} m-rich-text--show-images{% endif %} m-gradient m-color-{{ section.settings.color_scheme }} {{ section.settings.custom_class }}"
+   data-aos="fade-up" 
+  data-aos-duration="3000"
+ data-aos-anchor-placement="top-bottom"
+>
+   <div class="{{ section.settings.container }} m-section-my m-section-py">
+<div class="testimonial-slider-section">
+  <div class="testimonial-slider swiper-container">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+      <div class="swiper-slide testimonial-slide">
+        <div class="testimonial-images">
+          <div class="testimonial-image before">
+            <img src="{{ block.settings.before_image | img_url: '600x' }}" alt="Before" />
+            <span class="testimonial-label">{{ block.settings.before_label }}</span>
+          </div>
+          <div class="testimonial-image after">
+            <img src="{{ block.settings.after_image | img_url: '600x' }}" alt="After" />
+            <span class="testimonial-label">{{ block.settings.after_label }}</span>
+          </div>
+        </div>
+        <div class="testimonial-content">
+          <h2 class="testimonial-name">{{ block.settings.name }}</h2>
+          <p class="testimonial-quote">{{ block.settings.quote }}</p>
+          <div class="testimonial-tags">
+            {% if block.settings.tag_1 != blank %}<span class="testimonial-tag">{{ block.settings.tag_1 }}</span>{% endif %}
+            {% if block.settings.tag_2 != blank %}<span class="testimonial-tag">{{ block.settings.tag_2 }}</span>{% endif %}
+            {% if block.settings.tag_3 != blank %}<span class="testimonial-tag">{{ block.settings.tag_3 }}</span>{% endif %}
+          </div>
+          <div class="testimonial-product-note">{{ block.settings.product_note }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+       <div class="swiper-button-prev"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></div>
+    <div class="swiper-button-next"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></div>
+  </div>
+</div>
+   </div>
+</section>
+
+<style>
+
+.testimonial-slider {
+  position: relative;
+}
+.testimonial-slide {
+  display: flex;
+  align-items: center;
+  padding: 32px;
+  gap: 40px;
+}
+.testimonial-images {
+  display: flex;
+  gap: 16px;
+}
+.testimonial-image {
+  position: relative;
+  width: 300px;
+  height: 360px;
+  background: #f3f3f3;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.testimonial-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.testimonial-label {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  background: #fff;
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.testimonial-content {
+    flex: 1;
+}
+.testimonial-name {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+.testimonial-quote {
+  font-size: 16PX;
+
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.testimonial-tags {
+  margin-bottom: 16px;
+}
+.testimonial-tag {
+  display: inline-block;
+  background: #e6f0f3;
+  font-size: 15px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+.testimonial-product-note {
+  font-size: 16px;
+
+  font-weight: 700;
+}
+.swiper-button-prev, .swiper-button-next {
+
+  background: #fff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  border: none;
+}
+.swiper-button-prev {
+  left: 8px;
+}
+.swiper-button-next {
+  right: 8px;
+}
+.swiper-button-prev svg, .swiper-button-next svg {
+  fill: #0a2239;
+  width: 24px;
+  height: 24px;
+}
+@media (max-width: 900px) {
+  .testimonial-slide {
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+  }
+  .testimonial-content {
+    padding-left: 0;
+  }
+  .testimonial-images {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .testimonial-image {
+    width: 140px;
+    height: 160px;
+  }
+  .testimonial-name {
+    font-size: 28px;
+  }
+  .swiper-button-prev, .swiper-button-next {
+      width: 29px;
+      height: 29px;
+  }
+  .swiper-button-prev {
+    left: -6px;
+}
+  .swiper-button-next {
+    right: 0px;
+}
+}
+
+  @media (min-width: 900px) {
+          .testimonial-content {
+          flex: 1;
+          padding: 60px 48px;
+      }
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  new Swiper('.testimonial-slider.swiper-container', {
+    slidesPerView: 1,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    loop: true,
+    autoHeight: true,
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Custom Testimonial Slider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Testimonial Slider Settings"
+    },
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container",
+      "options": [
+        {
+          "value": "container-fluid",
+          "label": "Default"
+        },
+        {
+          "value": "container-full",
+          "label": "Full width"
+        },
+        {
+          "value": "container",
+          "label": "Use container box"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Image settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Custom Attributes"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom classes"
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Visible in the view animation",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Inherit global setting"
+        },
+        {
+          "value": "fade-in",
+          "label": "Fade in"
+        },
+        {
+          "value": "fade-in-up",
+          "label": "Fade in up"
+        },
+        {
+          "value": "fade-in-left",
+          "label": "Fade in left"
+        },
+        {
+          "value": "fade-in-right",
+          "label": "Fade in right"
+        }
+      ]
+    }
+  ],
+  
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "before_image",
+          "label": "Before Image"
+        },
+        {
+          "type": "text",
+          "id": "before_label",
+          "label": "Before Label",
+          "default": "BEFORE"
+        },
+        {
+          "type": "image_picker",
+          "id": "after_image",
+          "label": "After Image"
+        },
+        {
+          "type": "text",
+          "id": "after_label",
+          "label": "After Label",
+          "default": "3 MONTHS GROWING"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "ANURADHA"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Testimonial Text",
+          "default": "My hair was starting to shed and that was affecting my confidence. I'm happy I found something that helps me keep my hair looking thicker and fuller."
+        },
+        {
+          "type": "text",
+          "id": "tag_1",
+          "label": "Tag 1",
+          "default": "VISIBLY FULLER"
+        },
+        {
+          "type": "text",
+          "id": "tag_2",
+          "label": "Tag 2",
+          "default": "VISIBLY THICKER"
+        },
+        {
+          "type": "text",
+          "id": "tag_3",
+          "label": "Tag 3",
+          "default": "VISIBLY LESS SHEDDING"
+        },
+        {
+          "type": "text",
+          "id": "product_note",
+          "label": "Product Note",
+          "default": "Taking Nutrafol Men Hair Growth Nutraceutical"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "Custom Testimonial Slider",
+      "category": "Testimonials",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}
