@@ -1,0 +1,263 @@
+{% schema %}
+{
+  "name": "Custom Full-Block Slider",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "text", "id": "subheading", "label": "Subheading", "default": "The skin—in its best light" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Introducing Lucent Facial Refiner" },
+        { "type": "textarea", "id": "desc", "label": "Description", "default": "A new gently exfoliating mask to even the texture and appearance of the skin, with a unique combination of ingredients to refine and replenish." },
+        { "type": "text", "id": "button_text", "label": "Button Text", "default": "Explore Lucent Facial Refiner" },
+        { "type": "url", "id": "button_link", "label": "Button Link" },
+        { "type": "select", "id": "media_type", "label": "Media Type", "options": [ {"value": "image", "label": "Image"}, {"value": "video", "label": "Video"} ], "default": "image" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "video_url", "label": "Video URL (mp4 or YouTube embed)",  },
+        { "type": "checkbox", "id": "video_autoplay", "label": "Autoplay Video", "default": false },
+        { "type": "checkbox", "id": "video_muted", "label": "Mute Video (recommended for autoplay)", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    { "name": "Custom Full-Block Slider", "category": "Custom" }
+  ]
+}
+{% endschema %}
+
+<style>
+.custom-slider-block-section {
+  background: #fcfbef;
+  /* min-height: 80vh; */
+  position: relative;
+  overflow: hidden;
+}
+.custom-slider-blocks {
+  display: flex;
+  transition: transform 0.7s cubic-bezier(.77,0,.18,1);
+  will-change: transform;
+}
+.custom-slider-block {
+  min-width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  /* min-height: 80vh; */
+}
+.custom-slider-block__left {
+  flex: 1 1 400px;
+  padding: 0px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 320px;
+}
+.custom-slider-block__logo {
+  font-size: 2.5rem;
+  font-family: serif;
+  margin-bottom: 24px;
+}
+.custom-slider-block__subheading {
+  font-size: 1rem;
+  color: #222;
+  margin-bottom: 8px;
+}
+.custom-slider-block__heading {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.custom-slider-block__desc {
+  font-size: 1.1rem;
+  margin-bottom: 32px;
+  color: #333;
+}
+.custom-slider-block__button {
+  padding: 14px 32px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #222;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  /* border-radius: 2px; */
+  transition: background 0.2s;
+}
+.custom-slider-block__button:hover {
+  background: #f5f5e6;
+}
+.custom-slider-block__right {
+  flex: 1 1 600px;
+  min-width: 320px;
+  display: flex;
+  align-items: self-start;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.custom-slider-block__media {
+  width: 100%;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-slider-block__img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  /* border-radius: 8px; */
+  max-height: 70vh;
+}
+.custom-slider-block__video {
+  width: 100%;
+  max-height: 70vh;
+  /* border-radius: 8px; */
+  background: #000;
+}
+.custom-slider-block-nav {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  background: rgba(252,251,239,0.95);
+  padding: 8px 20px;
+  /* border-radius: 24px; */
+  font-size: 1.1rem;
+}
+.custom-slider-block-nav__arrow {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #222;
+  padding: 0 8px;
+  transition: color 0.2s;
+}
+.custom-slider-block-nav__arrow:disabled {
+  color: #bbb;
+  cursor: default;
+}
+.custom-slider-block-nav__counter {
+  min-width: 48px;
+  text-align: center;
+  font-family: monospace;
+}
+.custom-slider-block-nav__pause {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #222;
+  padding: 0 8px;
+}
+@media (max-width: 900px) {
+  .custom-slider-block {
+    flex-direction: column;
+  }
+  .custom-slider-block__left, .custom-slider-block__right {
+    min-width: 0;
+    width: 100%;
+    padding: 32px 16px;
+  }
+  .custom-slider-block__media {
+    max-height: 40vh;
+  }
+}
+</style>
+
+<div class="custom-slider-block-section">
+  <div class="custom-slider-blocks">
+    {% for block in section.blocks %}
+      <div class="custom-slider-block" data-block-index="{{ forloop.index0 }}">
+        <div class="custom-slider-block__left">
+          <div class="custom-slider-block__logo">Aēsop.</div>
+          <div class="custom-slider-block__subheading">{{ block.settings.subheading }}</div>
+          <div class="custom-slider-block__heading">{{ block.settings.heading }}</div>
+          <div class="custom-slider-block__desc">{{ block.settings.desc }}</div>
+          {% if block.settings.button_text != blank and block.settings.button_link != blank %}
+            <a href="{{ block.settings.button_link }}" class="custom-slider-block__button">{{ block.settings.button_text }}</a>
+          {% endif %}
+        </div>
+        <div class="custom-slider-block__right">
+          <div class="custom-slider-block__media">
+            {% if block.settings.media_type == 'image' and block.settings.image != blank %}
+              <img src="{{ block.settings.image | img_url: 'master' }}" class="custom-slider-block__img" alt="Slide Image {{ forloop.index }}">
+            {% elsif block.settings.media_type == 'video' and block.settings.video_url != blank %}
+              {% if block.settings.video_url contains 'youtube.com' or block.settings.video_url contains 'youtu.be' %}
+                <iframe class="custom-slider-block__video" src="{{ block.settings.video_url | replace: 'watch?v=', 'embed/' }}{% if block.settings.video_autoplay %}?autoplay=1&mute=1{% endif %}" frameborder="0" allowfullscreen{% if block.settings.video_autoplay %} allow="autoplay"{% endif %}></iframe>
+              {% else %}
+                <video class="custom-slider-block__video" src="{{ block.settings.video_url }}" controls playsinline{% if block.settings.video_autoplay %} autoplay{% endif %}{% if block.settings.video_muted %} muted{% endif %}></video>
+              {% endif %}
+            {% else %}
+              <div style="width:100%;height:300px;background:#eee;display:flex;align-items:center;justify-content:center;">No media</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="custom-slider-block-nav">
+    <button class="custom-slider-block-nav__arrow" id="sliderPrev">&#60;</button>
+    <span class="custom-slider-block-nav__counter" id="sliderCounter">1/1</span>
+    <button class="custom-slider-block-nav__arrow" id="sliderNext">&#62;</button>
+    <button class="custom-slider-block-nav__pause" id="sliderPause">&#10073;&#10073;</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var blocks = document.querySelectorAll('.custom-slider-block');
+  var slider = document.querySelector('.custom-slider-blocks');
+  var prevBtn = document.getElementById('sliderPrev');
+  var nextBtn = document.getElementById('sliderNext');
+  var counter = document.getElementById('sliderCounter');
+  var pauseBtn = document.getElementById('sliderPause');
+  var total = blocks.length;
+  var current = 0;
+  var paused = false;
+  var interval = null;
+
+  function updateSlider() {
+    slider.style.transform = 'translateX(' + (-current * 100) + 'vw)';
+    counter.textContent = (current + 1) + '/' + total;
+    prevBtn.disabled = (current === 0);
+    nextBtn.disabled = (current === total - 1);
+    pauseBtn.innerHTML = paused ? '&#9654;' : '&#10073;&#10073;';
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= total) return;
+    current = idx;
+    updateSlider();
+  }
+
+  prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  nextBtn.addEventListener('click', function() { goTo(current + 1); });
+  pauseBtn.addEventListener('click', function() {
+    paused = !paused;
+    updateSlider();
+    if (!paused) startAuto();
+    else stopAuto();
+  });
+
+  function startAuto() {
+    if (interval) clearInterval(interval);
+    interval = setInterval(function() {
+      if (!paused && total > 1) {
+        goTo((current + 1) % total);
+      }
+    }, 6000);
+  }
+  function stopAuto() { if (interval) clearInterval(interval); }
+
+  updateSlider();
+  if (total > 1) startAuto();
+})();
+</script>
