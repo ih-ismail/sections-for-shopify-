@@ -17,5 +17,6 @@
 
 ## 5. Sidebar Tab Section
 [<img src="https://i.ibb.co.com/MDqKZYZC/image.png" alt="image" border="0">](https://ibb.co.com/fYmZqhqx)
-🌐 [Source Code]([https://github.com/ih-ismail/sections-for-shopify-/blob/main/instafeed.liquid](https://github.com/ih-ismail/sections-for-shopify-/blob/main/Sidebar%20Tab%20Section))
+🌐 [Source Code](https://github.com/ih-ismail/sections-for-shopify-/blob/main/Sidebar%20Tab%20Section)
+
 
