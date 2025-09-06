@@ -1,0 +1,426 @@
+<!-- sections/pricing-cards.liquid -->
+<section id="shopify-section-{{ section.id }}" class="shopify-section olla-pricing-xy12">
+  <style>
+  #shopify-section-{{ section.id }} .olla-pricing-xy12 {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-card-ab34 {
+      border: 2px solid {{ section.settings.card_border_color }};
+      border-radius: 12px;
+      text-align: center;
+      width: 280px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      position: relative;
+      padding: 20px;
+      padding-top: 60px; /* space for label */
+      box-sizing: border-box;
+      background: {{ section.settings.card_bg_color }};
+      box-shadow: {{ section.settings.card_shadow }};
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* ensure button at bottom */
+      min-height: 500px; /* set minimum height for all cards */
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-card-ab34 img {
+      width: 120px;
+      margin: auto;
+      padding: 30px 0;
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-old-price-kl56 {
+      text-decoration: line-through;
+      color: {{ section.settings.old_price_color }};
+      font-size: 14px;
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-new-price-mn78 {
+      font-size: 22px;
+      font-weight: bold;
+      color: {{ section.settings.new_price_color }};
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-save-pq90 {
+      color: {{ section.settings.save_text_color }};
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-card-ab34.active {
+      border: 3px solid {{ section.settings.active_border_color }};
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-btn-rs12 {
+      visibility: hidden;
+      opacity: 0;
+      background: {{ section.settings.button_bg_color }};
+      color: {{ section.settings.button_text_color }};
+      font-weight: bold;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 16px;
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+      min-height: 50px; /* reserve space for button */
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-card-ab34.active .olla-btn-rs12 {
+      visibility: visible;
+      opacity: 1;
+    }
+
+
+    #shopify-section-{{ section.id }} .olla-label-tz34 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: {{ section.settings.default_label_color }};
+      color: #fff;
+      font-size: {{ section.settings.label_font_size }}px;
+      font-weight: bold;
+      padding: 8px 0;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+    }
+
+  </style>
+
+  <div class="olla-pricing-xy12">
+    {% for block in section.blocks %}
+      {% assign product = all_products[block.settings.product] %}
+      {% if product != blank %}
+        {% assign variant = product.selected_or_first_available_variant %}
+        <div class="olla-card-ab34 {% if forloop.index == section.settings.default_active_block %}active{% endif %}" 
+             data-product-id="{{ product.id }}" 
+             data-variant-id="{{ variant.id }}">
+          
+          <div class="olla-label-tz34" style="background: {{ block.settings.label_color | default: section.settings.default_label_color }}">
+            {{ block.settings.label_text | default: "OFFER" }}
+          </div>
+          
+          <h3>{{ block.settings.pack_title | default: product.title }}</h3>
+          
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | image_url: width: 300 }}" 
+                 alt="{{ block.settings.pack_title | default: product.title }}" 
+                 loading="lazy">
+          {% elsif product.featured_image != blank %}
+            <img src="{{ product.featured_image | image_url: width: 300 }}" 
+                 alt="{{ product.title }}" 
+                 loading="lazy">
+          {% endif %}
+          
+          {% if product.compare_at_price > product.price %}
+            <p class="olla-old-price-kl56">
+              {{ product.compare_at_price | money }}
+            </p>
+          {% endif %}
+          
+          <p class="olla-new-price-mn78">
+            {{ product.price | money }}
+            {% if section.settings.show_variant_price and product.variants.size > 1 %}
+              <span style="font-size: 14px; display: block;">({{ product.price_min | money }} - {{ product.price_max | money }})</span>
+            {% endif %}
+          </p>
+          
+          {% if product.compare_at_price > product.price %}
+            <p class="olla-save-pq90">
+              SAVE {{ product.compare_at_price | minus: product.price | money }}<br>
+              ({{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}% OFF)
+              {% if block.settings.shipping_text != blank %}
+                <br>{{ block.settings.shipping_text }}
+              {% endif %}
+            </p>
+          {% elsif block.settings.shipping_text != blank %}
+            <p class="olla-save-pq90">
+              {{ block.settings.shipping_text }}
+            </p>
+          {% endif %}
+          
+          <button class="olla-btn-rs12" onclick="addToCartAndRedirect({{ variant.id }})">
+            {{ block.settings.button_label | default: "ORDER NOW" }}
+          </button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+      document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll("#shopify-section-{{ section.id }} .olla-card-ab34");
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        cards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+      });
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const cards = document.querySelectorAll("#shopify-section-{{ section.id }} .olla-card-ab34");
+    
+    // Initialize active card
+    const defaultActiveIndex = {{ section.settings.default_active_block | minus: 1 }};
+    if (cards.length > 0 && defaultActiveIndex < cards.length) {
+      cards.forEach((card, index) => {
+        if (index === defaultActiveIndex) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+    
+    // Card click handler
+    cards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        // Don't change active card if clicking the button
+        if (e.target.classList.contains('olla-btn-rs12')) return;
+        
+        cards.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  });
+
+  function addToCartAndRedirect(variantId) {
+    if (!variantId) {
+      console.error('Variant ID is missing');
+      return;
+    }
+    
+    // Show loading state
+    const buttons = document.querySelectorAll('.olla-btn-rs12');
+    buttons.forEach(button => {
+      button.disabled = true;
+    
+    });
+    
+    fetch(window.Shopify.routes.root + 'cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: [{
+          id: variantId,
+          quantity: 1
+        }]
+      }),
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(() => {
+      window.location.href = '/checkout';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      buttons.forEach(button => {
+        button.disabled = false;
+        button.textContent = 'ORDER NOW';
+      });
+      alert('There was an error adding the product to your cart. Please try again.');
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Custom Pricing Cards",
+  "tag": "section",
+  "class": "pricing-cards-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Global Design Settings"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card Border Color",
+      "default": "#dddddd"
+    },
+    {
+      "type": "color",
+      "id": "active_border_color",
+      "label": "Active Card Border Color",
+      "default": "#28a745"
+    },
+    {
+      "type": "text",
+      "id": "card_shadow",
+      "label": "Card Shadow (CSS)",
+      "default": "0 5px 15px rgba(0,0,0,0.1)"
+    },
+    {
+      "type": "color",
+      "id": "old_price_color",
+      "label": "Old Price Color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "new_price_color",
+      "label": "New Price Color",
+      "default": "#ff0000"
+    },
+    {
+      "type": "color",
+      "id": "save_text_color",
+      "label": "Save Text Color",
+      "default": "#28a745"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#28a745"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "default_label_color",
+      "label": "Default Label Color",
+      "default": "#28a745"
+    },
+    {
+      "type": "range",
+      "id": "label_font_size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Label Font Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "default_active_block",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "Default Active Card (position)",
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "show_variant_price",
+      "label": "Show Price Range for Variants",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "text",
+          "id": "label_text",
+          "label": "Label Text",
+          "default": "🔥 BEST VALUE"
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label Background Color"
+        },
+        {
+          "type": "text",
+          "id": "pack_title",
+          "label": "Custom Title (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "shipping_text",
+          "label": "Shipping Text",
+          "default": "FREE SHIPPING"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "ORDER NOW"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Pricing Cards",
+      "category": "Custom",
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "label_text": "🔥 SINGLE PACK"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "label_text": "✨ MOST POPULAR"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "label_text": "💰 BEST VALUE"
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6
+}
+{% endschema %}
